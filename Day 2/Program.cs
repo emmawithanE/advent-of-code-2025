@@ -24,9 +24,7 @@ what are the possible spaces of N?
 
 using System.Numerics;
 
-String input = File.ReadAllText("input.txt");
-
-List<long> invalids = new List<long>();
+#region ASide
 
 long CalculateAA(long a)
 {
@@ -34,48 +32,64 @@ long CalculateAA(long a)
     return a + a * (int)Math.Pow(10, Math.Ceiling(Math.Log10((float)a + 0.5))); // do NOT look at what i am doing at the end here (to deal with a being an exact multiple of 10)
 }
 
-foreach (var range in input.Split(','))
+void ASide(string[] split_input)
 {
-    var values = range.Split('-');
-    String lower = values[0];
-    String upper = values[1];
+    List<long> invalids = new List<long>();
 
-    // Construct starting value of A (of AA fame)
-    long a;
-    if (lower.Length % 2 != 0)
+    foreach (var range in split_input)
     {
-        // lower is odd length, start at A = 1(0)N, where N is such that total digits is half the length of lower (rounded up)
-        // (which is 10 ^ length / 2 rounded down?
+        var values = range.Split('-');
+        String lower = values[0];
+        String upper = values[1];
 
-        a = (long)Math.Pow(10, (lower.Length / 2));
-    }
-    else
-    {
-        a = Int64.Parse(lower.Substring(0, lower.Length / 2));
-        var b = Int64.Parse(lower.Substring(lower.Length / 2));
-
-        if (b > a)
+        // Construct starting value of A (of AA fame)
+        long a;
+        if (lower.Length % 2 != 0)
         {
+            // lower is odd length, start at A = 1(0)N, where N is such that total digits is half the length of lower (rounded up)
+            // (which is 10 ^ length / 2 rounded down?
+
+            a = (long)Math.Pow(10, (lower.Length / 2));
+        }
+        else
+        {
+            a = Int64.Parse(lower.Substring(0, lower.Length / 2));
+            var b = Int64.Parse(lower.Substring(lower.Length / 2));
+
+            if (b > a)
+            {
+                a++;
+            }
+        }
+
+        long upper_val = Int64.Parse(upper);
+
+        long aa = CalculateAA(a);
+
+        // Console.WriteLine("{0} gives a={1}, aa={2}", range, a, aa);
+
+        Console.WriteLine("range: " + range);
+
+        while (aa <= upper_val)
+        {
+            Console.WriteLine("   id: {0}", aa);
+            invalids.Add(aa);
             a++;
+            aa = CalculateAA(a);
+
         }
     }
 
-    long upper_val = Int64.Parse(upper);
-
-    long aa = CalculateAA(a);
-
-    // Console.WriteLine("{0} gives a={1}, aa={2}", range, a, aa);
-
-    Console.WriteLine("range: " + range);
-
-    while (aa <= upper_val)
-    {
-        Console.WriteLine("   id: {0}", aa);
-        invalids.Add(aa);
-        a++;
-        aa = CalculateAA(a);
-
-    }
+    Console.WriteLine("found {0} invalid ids with a sum of {1}", invalids.Count(), invalids.Sum());
 }
 
-Console.WriteLine("found {0} invalid ids with a sum of {1}", invalids.Count(), invalids.Sum());
+#endregion
+
+
+
+
+
+String[] input = File.ReadAllText("input.txt").Split(',');
+
+ASide(input);
+
