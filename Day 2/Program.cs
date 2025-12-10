@@ -31,7 +31,7 @@ List<long> invalids = new List<long>();
 long CalculateAA(long a)
 {
     // construct aa, which is a + (a but shifted up by length digits)
-    return a + a * (int)Math.Pow(10, Math.Ceiling(Math.Log10(a)));
+    return a + a * (int)Math.Pow(10, Math.Ceiling(Math.Log10((float)a + 0.5))); // do NOT look at what i am doing at the end here (to deal with a being an exact multiple of 10)
 }
 
 foreach (var range in input.Split(','))
@@ -64,8 +64,13 @@ foreach (var range in input.Split(','))
 
     long aa = CalculateAA(a);
 
+    // Console.WriteLine("{0} gives a={1}, aa={2}", range, a, aa);
+
+    Console.WriteLine("range: " + range);
+
     while (aa <= upper_val)
     {
+        Console.WriteLine("   id: {0}", aa);
         invalids.Add(aa);
         a++;
         aa = CalculateAA(a);
