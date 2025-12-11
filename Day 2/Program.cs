@@ -69,11 +69,11 @@ void ASide(string[] split_input)
 
         // Console.WriteLine("{0} gives a={1}, aa={2}", range, a, aa);
 
-        Console.WriteLine("range: " + range);
+        //Console.WriteLine("range: " + range);
 
         while (aa <= upper_val)
         {
-            Console.WriteLine("   id: {0}", aa);
+            //Console.WriteLine("   id: {0}", aa);
             invalids.Add(aa);
             a++;
             aa = CalculateAA(a);
@@ -128,29 +128,37 @@ void BSide(String[] split_input)
         long lower_val = long.Parse(lower);
         long upper_val = long.Parse(upper);
 
+        //Console.WriteLine("checking range: " + range);
+
         foreach (int digits in Enumerable.Range(lower.Length, (upper.Length - lower.Length)+1))
         {
+            //Console.WriteLine("  looking for ids of length: " + digits.ToString());
+
             // determined the length, now let's find a substring length
-            foreach (int sub_digits in Enumerable.Range(1,digits-1))
+            foreach (int sub_digits in Enumerable.Range(1,(digits / 2))) // stop counting substrings that are just the whole string lmao
             {
                 if (digits % sub_digits == 0)
                 {
                     // we have found a valid substring length
+                    //Console.WriteLine("    checking substrings of length: " + sub_digits.ToString());
 
                     long a = long.Parse(lower.Substring(0, sub_digits));
-                    long aa = RepeatToLength(a, sub_digits);
+                    long aa = RepeatToLength(a, digits);
 
                     if (aa < lower_val)
                     {
                         a++;
-                        aa = RepeatToLength(a, sub_digits);
+                        aa = RepeatToLength(a, digits);
                     }
 
                     while (aa < upper_val)
                     {
+                        //Console.WriteLine("      id found: {0}, substring {1}", aa, a);
                         invalids.Add(aa);
                         a++;
-                        aa = RepeatToLength(a, sub_digits);
+                        aa = RepeatToLength(a, digits);
+
+                        //Console.ReadLine();
                     }
 
                 }
