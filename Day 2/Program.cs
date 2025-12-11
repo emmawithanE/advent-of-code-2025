@@ -130,6 +130,8 @@ void BSide(String[] split_input)
 
         Console.WriteLine("checking range: " + range);
 
+        List<long> invalids_this_range = new List<long>();
+
         foreach (int digits in Enumerable.Range(lower.Length, (upper.Length - lower.Length)+1))
         {
             Console.WriteLine("  looking for ids of length: " + digits.ToString());
@@ -164,8 +166,17 @@ void BSide(String[] split_input)
 
                     while (aa < upper_val)
                     {
-                        Console.WriteLine("      id found: {0}, substring {1}", aa, a);
-                        invalids.Add(aa);
+                        
+                        if (invalids_this_range.Contains(aa))
+                        {
+                            Console.WriteLine("      repeating {0}, substring {1}", aa, a);
+                        }
+                        else
+                        {
+                            Console.WriteLine("      id found: {0}, substring {1}", aa, a);
+                            invalids_this_range.Add(aa);
+                        }
+                            
                         if ((int)Math.Log10(a + 1) == (int)Math.Log10(a))
                         {
                             a++;
@@ -183,6 +194,7 @@ void BSide(String[] split_input)
             }
         }
 
+        invalids.AddRange(invalids_this_range);
     }
 
     Console.WriteLine("Searching more finely, found {0} invalid ids with a sum of {1}", invalids.Count(), invalids.Sum());
