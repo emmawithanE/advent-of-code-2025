@@ -22,6 +22,7 @@ what are the possible spaces of N?
 
 // now, how do we get our input and split on commas?
 
+using System;
 using System.Numerics;
 
 #region ASide
@@ -85,11 +86,87 @@ void ASide(string[] split_input)
 
 #endregion
 
+#region BSide
 
+/*
+Thinking about the same as before but let's be less clever with it this time lmao
+Consider numbers that are length len(X) - len(Y)
+For a given length:
+- Only repeating strings that are a factor of the length are possible
+- If the length is len(X), then the lowest possible repeating string is the first A digits of X
+  - If this gives a number less than X, start from (A+1)
+- If the length is len(Y), we need to stop when we get above Y
+- If the length is between X and Y, there will be exactly 9x10^(len-1) correct strings for each length (eg. 1-9, 10-99, 100-999)
+  - but we need the sum of them so let's just find them normally
+*/
+
+long RepeatToLength(long substring, int length)
+{
+    long result = substring;
+    int substring_length = (int)Math.Ceiling(Math.Log10((double)substring + 0.5));
+
+    while (result < Math.Pow(10, length - 1))
+    {
+        result *= (long)Math.Pow(10, substring_length);
+        result += substring;
+    }
+
+    return result;
+}
+
+void BSide(String[] split_input)
+{
+
+    List<long> invalids = new List<long>();
+
+    foreach (var range in split_input)
+    {
+        var values = range.Split('-');
+        String lower = values[0];
+        String upper = values[1];
+
+        long lower_val = long.Parse(lower);
+        long upper_val = long.Parse(upper);
+
+        foreach (int digits in Enumerable.Range(lower.Length, (upper.Length - lower.Length)+1))
+        {
+            // determined the length, now let's find a substring length
+            foreach (int sub_digits in Enumerable.Range(1,digits-1))
+            {
+                if (digits % sub_digits == 0)
+                {
+                    // we have found a valid substring length
+
+                    long a = long.Parse(lower.Substring(0, sub_digits));
+                    long aa = RepeatToLength(a, sub_digits);
+
+                    if (aa < lower_val)
+                    {
+                        a++;
+                        aa = RepeatToLength(a, sub_digits);
+                    }
+
+                    while (aa < upper_val)
+                    {
+                        invalids.Add(aa);
+                        a++;
+                        aa = RepeatToLength(a, sub_digits);
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    Console.WriteLine("Searching more finely, found {0} invalid ids with a sum of {1}", invalids.Count(), invalids.Sum());
+}
+#endregion
 
 
 
 String[] input = File.ReadAllText("input.txt").Split(',');
 
 ASide(input);
+BSide(input);
 
