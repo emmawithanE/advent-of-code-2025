@@ -22,18 +22,27 @@ IEnumerable<String> GetInput()
     return File.ReadLines("Input.txt"); // I wonder if this is something I can have as like a library that this whole solution accesses? idk i should learn how to write C#
 }
 
-String Get2DigitNumber(String input)
+String GetNDigitNumber(String input, int digits)
 {
-    // Find the highest digit up to but not including the last one
-    // Then append the highest digit after that
+    // Find the highest digit that lets us still make a complete number
+    // Then append digits after that
 
     //Console.WriteLine("Input line: " + input);
 
-    (char highest, int index) = GetHighestCharAndIndex(input.Substring(0, input.Length - 1));
+    List<char> chars = new List<char>();
+    int digits_remaining = digits;
+    int index = 0;
 
-    (char second, int _) = GetHighestCharAndIndex(input.Substring(index + 1));
+    while (digits_remaining > 0)
+    {
+        String substring = input.Substring(index, input.Length - (index + digits_remaining - 1));
+        (char highest, int relative_index) = GetHighestCharAndIndex(substring);
+        index += relative_index + 1;
+        chars.Add(highest);
+        digits_remaining--;
+    }
 
-    return new String([highest, second]);
+    return new String(chars.ToArray());
 }
 
 (char, int) GetHighestCharAndIndex(String input)
@@ -61,13 +70,13 @@ String Get2DigitNumber(String input)
 
 Int64 ToInt(String input) { return Int64.Parse(input); }
 
-List<String> Get2DigitStrings(IEnumerable<String> input)
+List<String> GetNDigitStrings(IEnumerable<String> input, int digits)
 {
     List<String> list = new List<String>();
 
     foreach (String line in input)
     {
-        list.Add(Get2DigitNumber(line));
+        list.Add(GetNDigitNumber(line, digits));
     }
 
     return list;
@@ -76,11 +85,23 @@ List<String> Get2DigitStrings(IEnumerable<String> input)
 Int64 SumOfStrings(List<String> input) { return input.Sum(str => ToInt(str)); }
 
 
+void ProcessAndPrintNDigits(IEnumerable<String> input, int digits)
+{
+    Int64 sum = SumOfStrings(GetNDigitStrings(input, digits));
+
+    Console.WriteLine("Sum of {0} Digit Joltages: {1}", digits, sum);
+}
+
+
+
 void ASide(IEnumerable<String> input)
 {
-    Int64 sum = SumOfStrings(Get2DigitStrings(input));
+    ProcessAndPrintNDigits(input, 2);
+}
 
-    Console.WriteLine("Sum of 2 Digit Joltages: " + sum.ToString());
+void BSide(IEnumerable<String> input)
+{
+    ProcessAndPrintNDigits(input, 12);
 }
 
 
@@ -90,3 +111,5 @@ void ASide(IEnumerable<String> input)
 // okay now let's actually do the thing
 
 ASide(GetInput());
+
+BSide(GetInput());
