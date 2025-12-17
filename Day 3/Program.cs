@@ -27,9 +27,11 @@ String Get2DigitNumber(String input)
     // Find the highest digit up to but not including the last one
     // Then append the highest digit after that
 
+    //Console.WriteLine("Input line: " + input);
+
     (char highest, int index) = GetHighestCharAndIndex(input.Substring(0, input.Length - 1));
 
-    (char second, int _) = GetHighestCharAndIndex(input.Substring(index));
+    (char second, int _) = GetHighestCharAndIndex(input.Substring(index + 1));
 
     return new String([highest, second]);
 }
@@ -38,6 +40,8 @@ String Get2DigitNumber(String input)
 {
     // get the highest character in a string
     // return what the character is and also where we found it, so the function that called us can find characters behind us next time
+
+    //Console.WriteLine("  Getting highest digit in " + input);
 
     char highest = '0';
     int index = 0;
@@ -51,6 +55,7 @@ String Get2DigitNumber(String input)
         }
     }
 
+    // Console.WriteLine("  Found {0} at index {1}", highest, index);
     return (highest, index);
 }
 
