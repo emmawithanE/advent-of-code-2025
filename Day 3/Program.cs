@@ -59,7 +59,7 @@ String Get2DigitNumber(String input)
     return (highest, index);
 }
 
-int ToInt(String input) { return int.Parse(input); }
+Int64 ToInt(String input) { return Int64.Parse(input); }
 
 List<String> Get2DigitStrings(IEnumerable<String> input)
 {
@@ -73,12 +73,12 @@ List<String> Get2DigitStrings(IEnumerable<String> input)
     return list;
 }
 
-int SumOfStrings(List<String> input) { return input.Sum(str => ToInt(str)); }
+Int64 SumOfStrings(List<String> input) { return input.Sum(str => ToInt(str)); }
 
 
 void ASide(IEnumerable<String> input)
 {
-    int sum = SumOfStrings(Get2DigitStrings(input));
+    Int64 sum = SumOfStrings(Get2DigitStrings(input));
 
     Console.WriteLine("Sum of 2 Digit Joltages: " + sum.ToString());
 }
